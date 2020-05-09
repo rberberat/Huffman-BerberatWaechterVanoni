@@ -104,7 +104,6 @@ public class Main {
     }
 
     HuffmanNode createHuffmanTree(List<HuffmanNode> nodes) {
-
         if(nodes.size() == 1){
             return nodes.get(0);
         } else if(nodes.size() == 0){
