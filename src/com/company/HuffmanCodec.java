@@ -18,12 +18,15 @@ public class HuffmanCodec {
 
     public static void main(String[] args) {
         HuffmanCodec m = new HuffmanCodec();
+
+        // Takes input.txt-file, and creates dec_tab.txt and output.dat (all in files-folder)
         try {
             m.encodeInputText();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        // Takes output-mada.dat and dec_tab.txt and created input-mada.txt (all in files)
         try {
             m.decodeOutputText();
         } catch (Exception e) {
@@ -233,12 +236,14 @@ public class HuffmanCodec {
         }
     }
 
+    // writeFile-methode von Prof. Vogt
     private void writeFile(String filePath, byte[] out) throws IOException {
         FileOutputStream fos = new FileOutputStream(filePath);
         fos.write(out);
         fos.close();
     }
 
+    // readFile-methode von Prof. Vogt
     private byte[] readFile(String filePath) throws IOException {
         File file = new File(filePath);
         byte[] bFile = new byte[(int) file.length()];

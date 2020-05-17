@@ -1,7 +1,6 @@
 package com.company;
 
-import java.util.Comparator;
-
+// Custom Class to create a Binary-Tree for the Huffman Encoding-Strategy
 public class HuffmanNode implements Comparable<HuffmanNode> {
     int value = 0;
     int characterAsInt = -1;
