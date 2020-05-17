@@ -1,5 +1,8 @@
 package com.company;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,38 +24,38 @@ public class HuffmanCodec {
 
         // Takes input.txt-file, and creates dec_tab.txt and output.dat (all in files-folder)
         try {
-            m.encodeInputText();
+            m.encodeInputText(STANDARD_INPUT, STANDARD_OUTPUT, STANDARD_HUFFMAN);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // Takes output-mada.dat and dec_tab.txt and created input-mada.txt (all in files)
         try {
-            m.decodeOutputText();
+            m.decodeOutputText(ORIGINAL_INPUT, ORIGINAL_OUTPUT, ORIGINAL_HUFFMAN);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    void decodeOutputText() throws Exception {
-        readHuffmanMapFromFile(ORIGINAL_HUFFMAN);
+    void decodeOutputText(String inputFile, String outputFile, String decTabFile) throws Exception {
+        readHuffmanMapFromFile(decTabFile);
         HuffmanNode rootNode = new HuffmanNode();
         for (Integer key : huffmanMap.keySet()) {
             buildHuffmanTreeFromMap(rootNode, huffmanMap.get(key), key);
         }
-        byte[] encodedFile = readFile(ORIGINAL_OUTPUT);
+        byte[] encodedFile = readFile(outputFile);
         String fileString = turnByteArrayToBinaryString(encodedFile);
-        writeToTextFile(ORIGINAL_INPUT, decodeBinaryString(fileString, rootNode));
+        writeToTextFile(inputFile, decodeBinaryString(fileString, rootNode));
     }
 
-    void encodeInputText() throws Exception {
-        int[] occ = countAsciiOccurencesInFile(STANDARD_INPUT);
+    void encodeInputText(String inputFile, String outputFile, String decTabFile) throws Exception {
+        int[] occ = countAsciiOccurencesInFile(inputFile);
         List<HuffmanNode> huffmanNodes = compressedOccurences(occ);
         huffmanMap.clear();
         HuffmanNode rootNode = createHuffmanTree(huffmanNodes);
         treePostorder(rootNode, "", "");
-        writeToTextFile(STANDARD_HUFFMAN, createHuffmanString());
-        encodeFile(STANDARD_INPUT);
+        writeToTextFile(decTabFile, createHuffmanString());
+        encodeFile(inputFile, outputFile);
     }
 
     private String decodeBinaryString(String binaryString, HuffmanNode huffmanTree) {
@@ -66,7 +69,7 @@ public class HuffmanCodec {
         return result;
     }
 
-    private HuffmanNode getFirstLeafNodeFromString(String binaryString, HuffmanNode node) {
+    private HuffmanNode getFirstLeafNodeFromString(String binaryString, @NotNull HuffmanNode node) {
         if (node.isLeafNode()) {
             return node;
         }
@@ -82,7 +85,7 @@ public class HuffmanCodec {
         throw new Error("You shouldn't be here");
     }
 
-    private String turnByteArrayToBinaryString(byte[] byteArray) {
+    @NotNull private String turnByteArrayToBinaryString(@NotNull byte[] byteArray) {
         StringBuilder result = new StringBuilder();
         for (Byte b : byteArray) {
             result.append(String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0'));
@@ -93,7 +96,7 @@ public class HuffmanCodec {
     }
 
     // Takes the Huffman-Map and creates a representation of its tree.
-    private void buildHuffmanTreeFromMap(HuffmanNode node, String binaryString, int finalValue) {
+    private void buildHuffmanTreeFromMap(HuffmanNode node, @NotNull String binaryString, int finalValue) {
         if (binaryString.length() == 0) {
             node.characterAsInt = finalValue;
             return;
@@ -128,8 +131,8 @@ public class HuffmanCodec {
         }
     }
 
-    private void encodeFile(String filePath) {
-        char[] fileAsCharArray = readFromTextFile(filePath).toCharArray();
+    private void encodeFile(String inputPath, String outputPath) {
+        char[] fileAsCharArray = readFromTextFile(inputPath).toCharArray();
 
         StringBuilder encodedString = new StringBuilder();
 
@@ -151,7 +154,7 @@ public class HuffmanCodec {
         }
 
         try {
-            writeFile(STANDARD_OUTPUT, encodedMessage);
+            writeFile(outputPath, encodedMessage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -159,7 +162,7 @@ public class HuffmanCodec {
     }
 
     // Creates the final decoder-String that gets saved into the dec_tab-file
-    private String createHuffmanString() {
+    @NotNull private String createHuffmanString() {
         StringBuilder string = new StringBuilder();
         for (int index : huffmanMap.keySet()) {
             string.append(String.format("%s:%s-", index, huffmanMap.get(index)));
@@ -186,7 +189,7 @@ public class HuffmanCodec {
     }
 
     // removes all occurences from the Array, where the value is 0 (Character doesn't appear in text)
-    private List<HuffmanNode> compressedOccurences(int[] occurencesArray) {
+    @NotNull private List<HuffmanNode> compressedOccurences(@NotNull int[] occurencesArray) {
         List<HuffmanNode> huffmanNodes = new ArrayList<>();
         for (int i = 0; i < occurencesArray.length; i++) {
             if (occurencesArray[i] > 0) {
@@ -198,7 +201,7 @@ public class HuffmanCodec {
         return huffmanNodes;
     }
 
-    private HuffmanNode createHuffmanTree(List<HuffmanNode> nodes) {
+    private HuffmanNode createHuffmanTree(@NotNull List<HuffmanNode> nodes) {
         if (nodes.size() == 1) {
             return nodes.get(0);
         } else if (nodes.size() == 0) {
@@ -220,7 +223,7 @@ public class HuffmanCodec {
 
     // Creates int-Array, where the position in the Array represents a char (as an int value)
     // and the stored value is the amount of occurences of the given char in the provided File.
-    private int[] countAsciiOccurencesInFile(String filePath) throws Exception {
+    @NotNull private int[] countAsciiOccurencesInFile(String filePath) throws Exception {
         int[] asciiOccurences = new int[128];
 
         String file = readFromTextFile(filePath);
@@ -244,7 +247,7 @@ public class HuffmanCodec {
     }
 
     // readFile-methode von Prof. Vogt
-    private byte[] readFile(String filePath) throws IOException {
+    @NotNull private byte[] readFile(String filePath) throws IOException {
         File file = new File(filePath);
         byte[] bFile = new byte[(int) file.length()];
         FileInputStream fis = new FileInputStream(file);
@@ -254,7 +257,7 @@ public class HuffmanCodec {
         return bFile;
     }
 
-    private String readFromTextFile(String path) {
+    @Nullable private String readFromTextFile(String path) {
         try {
             return Files.readString(Paths.get(path));
         } catch (IOException e) {
