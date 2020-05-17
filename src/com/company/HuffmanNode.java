@@ -5,6 +5,7 @@ import java.util.Comparator;
 public class HuffmanNode implements Comparable<HuffmanNode> {
     int value = 0;
     int characterAsInt = -1;
+    String binaryRepresentationOfNode = "";
     HuffmanNode left = null;
     HuffmanNode right = null;
 
@@ -21,6 +22,10 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
         this.right = right;
     }
 
+    boolean isLeafNode() {
+        return left == null && right == null;
+    }
+
     @Override
     public int compareTo(HuffmanNode o) {
         return this.value - o.value;
@@ -28,7 +33,8 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 
     @Override
     public String toString() {
-        return "HuffmanNode{" + "value=" + value + ", characterAsInt=" + characterAsInt + ", left=" + left + ", right="
+        return "HuffmanNode{" + "value=" + value + ", characterAsInt=" + characterAsInt
+                + ", binaryRepresentationOfNode='" + binaryRepresentationOfNode + '\'' + ", left=" + left + ", right="
                 + right + '}';
     }
 }
