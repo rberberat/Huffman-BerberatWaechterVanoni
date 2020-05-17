@@ -9,6 +9,7 @@ import java.util.*;
 public class Main {
     static final String ORIGINAL_OUTPUT = "files/output-mada.dat";
     static final String ORIGINAL_HUFFMAN = "files/dec_tab-mada.txt";
+    static final String ORIGINAL_INPUT = "files/input-mada.txt";
     static final String STANDARD_OUTPUT = "files/output.dat";
     static final String STANDARD_HUFFMAN = "files/dec_tab.txt";
     static final String STANDARD_INPUT = "files/input.txt";
@@ -17,16 +18,42 @@ public class Main {
 
     public static void main(String[] args) {
         Main m = new Main();
-        try {
-            int[] occ = m.countAsciiOccurencesInFile(STANDARD_INPUT);
-            List<HuffmanNode> huffmanNodes = m.compressedOccurences(occ);
-            HuffmanNode rootNode= m.createHuffmanTree(huffmanNodes);
-            m.treePostorder(rootNode, "","");
-            m.writeToTextFile(STANDARD_HUFFMAN, m.createHuffmanString());
-            m.encodeFile(STANDARD_INPUT);
+/*        try {
+            m.decodeInputText();
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+
+        m.readHuffmanMapFromFile(ORIGINAL_HUFFMAN);
+        System.out.println(m.huffmanMap);
+    }
+
+    void buildHuffmanTreeFromMap() {
+        HuffmanNode rootNode = new HuffmanNode();
+        String binaryString = "10001010";
+        int value = 92;
+
+        
+    }
+
+    void readHuffmanMapFromFile(String filepath){
+        huffmanMap.clear();
+
+        String decoderString = readFromTextFile(filepath);
+        String[] decoderArray = decoderString.split("-");
+        for (String part: decoderArray) {
+            String[] split = part.split(":");
+            huffmanMap.put(Integer.parseInt(split[0]), split[1]);
         }
+    }
+
+    void decodeInputText() throws Exception {
+            int[] occ = countAsciiOccurencesInFile(STANDARD_INPUT);
+            List<HuffmanNode> huffmanNodes = compressedOccurences(occ);
+            HuffmanNode rootNode = createHuffmanTree(huffmanNodes);
+            treePostorder(rootNode, "","");
+            writeToTextFile(STANDARD_HUFFMAN, createHuffmanString());
+            encodeFile(STANDARD_INPUT);
     }
 
     void encodeFile(String filePath){

@@ -3,14 +3,12 @@ package com.company;
 import java.util.Comparator;
 
 public class HuffmanNode implements Comparable<HuffmanNode> {
-    int value;
+    int value = 0;
     int characterAsInt = -1;
     HuffmanNode left = null;
     HuffmanNode right = null;
 
-    HuffmanNode(int value) {
-        this.value = value;
-    }
+    HuffmanNode(){};
 
     public HuffmanNode(int value, int characterAsInt) {
         this.value = value;
